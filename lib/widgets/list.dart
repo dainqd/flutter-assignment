@@ -10,7 +10,7 @@ class EcoTourismSpot {
   final String name;
   final int stars;
   final String address;
-  final double price; // Add a price property
+  final double price;
 
   EcoTourismSpot(this.image, this.name, this.stars, this.address, this.price);
 }
@@ -67,7 +67,14 @@ class ListTourArea extends StatelessWidget {
               itemCount: ecoTourismSpots.length,
               itemBuilder: (BuildContext context, int index) {
                 return Container(
-                  margin: EdgeInsets.symmetric(vertical: 8),
+                  padding: EdgeInsets.symmetric(vertical: 8),
+                  margin: EdgeInsets.symmetric(horizontal: 24),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.grey,
+                      width: 1,
+                    ),
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -123,7 +130,14 @@ class ListTourArea extends StatelessWidget {
                                           builder: (context) => DetailScreen()),
                                     );
                                   },
-                                  child: Text('Detail'),
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.purple,
+                                  ),
+                                  child: Text(
+                                      'Detail',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      )),
                                 ),
                               ],
                             ),

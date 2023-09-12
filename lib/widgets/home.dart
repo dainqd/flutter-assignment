@@ -12,9 +12,8 @@ class HomeScreen extends StatelessWidget {
             'https://danangfantasticity.com/wp-content/uploads/2022/02/background-att.jpg',
             fit: BoxFit.cover,
             height: double.infinity,
-            // Make sure the image covers the entire height
             width:
-                double.infinity, // Make sure the image covers the entire width
+                double.infinity,
           ),
           Center(
             child: Column(
@@ -52,7 +51,7 @@ class HomeScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  // Your navigation buttons go here
+
                 ],
               ),
             ),
