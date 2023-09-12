@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:demo_app/widgets/home.dart';
 import 'package:flutter/material.dart';
-import './list.dart';
+import './search.dart';
 import './favorite.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -93,7 +93,7 @@ class ProfileScreen extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ListTourArea()),
+                      MaterialPageRoute(builder: (context) => SearchTourArea()),
                     );
                   },
                 ),

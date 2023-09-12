@@ -2,40 +2,35 @@ import 'package:demo_app/widgets/home.dart';
 import 'package:flutter/material.dart';
 import './profile.dart';
 import './favorite.dart';
-import './search.dart';
-import './detail.dart';
 
 class EcoTourismSpot {
   final String image;
   final String name;
   final int stars;
   final String address;
-  final double price; // Add a price property
 
-  EcoTourismSpot(this.image, this.name, this.stars, this.address, this.price);
+  EcoTourismSpot(this.image, this.name, this.stars, this.address);
 }
 
-class ListTourArea extends StatelessWidget {
+class SearchTourArea extends StatelessWidget {
   final List<EcoTourismSpot> ecoTourismSpots = [
     EcoTourismSpot(
         'https://image.vietnamnews.vn/uploadvnnews/Article/2018/6/29/td11751221PM.jpg',
         'Làng Cổ Đường Lâm',
         4,
-        'Sơn Tây, Hà Nội',
-        100),
+        'Sơn Tây, Hà Nội'),
     EcoTourismSpot(
         'https://www.uncovervietnam.com/wp-content/uploads/2021/03/tam-dao-national-park-vietnam-lush-green-mountains-1600x1068.jpg',
         'Tam Đảo',
         5,
-        'Tam Đảo, Vĩnh Phúc',
-        150),
+        'Tam Đảo, Vĩnh Phúc'),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Khu Du Lịch Sinh Thái'),
+        title: Text('Search'),
       ),
       body: Column(
         children: <Widget>[
@@ -46,10 +41,17 @@ class ListTourArea extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Destination!',
+                  'Hi Guy!',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'Where are you going next?',
+                  style: TextStyle(
+                    fontSize: 16,
                   ),
                 ),
                 SizedBox(height: 8),
@@ -66,72 +68,54 @@ class ListTourArea extends StatelessWidget {
             child: ListView.builder(
               itemCount: ecoTourismSpots.length,
               itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  margin: EdgeInsets.symmetric(vertical: 8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Image.network(
-                        ecoTourismSpots[index].image,
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: 200,
-                      ),
-                      SizedBox(height: 8),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              ecoTourismSpots[index].name,
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
+                return Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Container(
+                        child: Stack(
+                          children: <Widget>[
+                            Image.network(
+                              ecoTourismSpots[index].image,
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                              height: 200,
                             ),
-                            SizedBox(height: 4),
-                            Text(
-                              'Số sao: ${ecoTourismSpots[index].stars}',
-                              style: TextStyle(
-                                fontSize: 16,
-                              ),
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              'Địa chỉ: ${ecoTourismSpots[index].address}',
-                              style: TextStyle(
-                                fontSize: 16,
-                              ),
-                            ),
-                            SizedBox(height: 4),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'Giá: ${ecoTourismSpots[index].price.toStringAsFixed(2)}',
-                                  style: TextStyle(
-                                    fontSize: 16,
+                            Positioned(
+                              bottom: 10,
+                              left: 10,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    ecoTourismSpots[index].name,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
                                   ),
-                                ),
-                                Spacer(),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => DetailScreen()),
-                                    );
-                                  },
-                                  child: Text('Detail'),
-                                ),
-                              ],
+                                  Text(
+                                    'Số sao: ${ecoTourismSpots[index].stars}',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Địa chỉ: ${ecoTourismSpots[index].address}',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 );
               },
             ),

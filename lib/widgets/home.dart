@@ -13,8 +13,8 @@ class HomeScreen extends StatelessWidget {
             fit: BoxFit.cover,
             height: double.infinity,
             // Make sure the image covers the entire height
-            width: double
-                .infinity, // Make sure the image covers the entire width
+            width:
+                double.infinity, // Make sure the image covers the entire width
           ),
           Center(
             child: Column(
