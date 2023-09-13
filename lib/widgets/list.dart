@@ -4,6 +4,9 @@ import './profile.dart';
 import './favorite.dart';
 import './search.dart';
 import './detail.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class EcoTourismSpot {
   final String image;
@@ -12,24 +15,36 @@ class EcoTourismSpot {
   final String address;
   final double price;
 
-  EcoTourismSpot(this.image, this.name, this.stars, this.address, this.price);
+  EcoTourismSpot({
+    required this.image,
+    required this.name,
+    required this.stars,
+    required this.address,
+    required this.price,
+  });
+
+  factory EcoTourismSpot.fromJson(Map<String, dynamic> json) {
+    return EcoTourismSpot(
+      image: json['image'],
+      name: json['name'],
+      stars: json['stars'],
+      address: json['address'],
+      price: json['price'],
+    );
+  }
 }
 
 class ListTourArea extends StatelessWidget {
-  final List<EcoTourismSpot> ecoTourismSpots = [
-    EcoTourismSpot(
-        'https://image.vietnamnews.vn/uploadvnnews/Article/2018/6/29/td11751221PM.jpg',
-        'Làng Cổ Đường Lâm',
-        4,
-        'Sơn Tây, Hà Nội',
-        100),
-    EcoTourismSpot(
-        'https://www.uncovervietnam.com/wp-content/uploads/2021/03/tam-dao-national-park-vietnam-lush-green-mountains-1600x1068.jpg',
-        'Tam Đảo',
-        5,
-        'Tam Đảo, Vĩnh Phúc',
-        150),
-  ];
+  Future<List<EcoTourismSpot>> fetchData() async {
+    final response = await http.get(Uri.http("127.0.0.1:8888", "/tour"));
+
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse.map((data) => EcoTourismSpot.fromJson(data)).toList();
+    } else {
+      throw Exception('Unexpected error occured!');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,89 +78,107 @@ class ListTourArea extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: ecoTourismSpots.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  padding: EdgeInsets.symmetric(vertical: 8),
-                  margin: EdgeInsets.symmetric(horizontal: 24),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.grey,
-                      width: 1,
-                    ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Image.network(
-                        ecoTourismSpots[index].image,
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: 200,
+            child: FutureBuilder<List<EcoTourismSpot>>(
+              future: fetchData(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<EcoTourismSpot>> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Lỗi: ${snapshot.error}'));
+                }
+
+                List<EcoTourismSpot> ecoTourismSpots = snapshot.data!;
+
+                return ListView.builder(
+                  itemCount: ecoTourismSpots.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    EcoTourismSpot spot = ecoTourismSpots[index];
+                    return Container(
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      margin: EdgeInsets.symmetric(horizontal: 24),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.grey,
+                          width: 1,
+                        ),
                       ),
-                      SizedBox(height: 8),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              ecoTourismSpots[index].name,
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              'Số sao: ${ecoTourismSpots[index].stars}',
-                              style: TextStyle(
-                                fontSize: 16,
-                              ),
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              'Địa chỉ: ${ecoTourismSpots[index].address}',
-                              style: TextStyle(
-                                fontSize: 16,
-                              ),
-                            ),
-                            SizedBox(height: 4),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Image.network(
+                            spot.image,
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            height: 200,
+                          ),
+                          SizedBox(height: 8),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Giá: ${ecoTourismSpots[index].price.toStringAsFixed(2)}',
+                                  spot.name,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  'Số sao: ${spot.stars}',
                                   style: TextStyle(
                                     fontSize: 16,
                                   ),
                                 ),
-                                Spacer(),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => DetailScreen()),
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    primary: Colors.purple,
+                                SizedBox(height: 4),
+                                Text(
+                                  'Địa chỉ: ${spot.address}',
+                                  style: TextStyle(
+                                    fontSize: 16,
                                   ),
-                                  child: Text(
-                                      'Detail',
+                                ),
+                                SizedBox(height: 4),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Giá: ${spot.price.toStringAsFixed(2)}',
                                       style: TextStyle(
-                                        color: Colors.white,
-                                      )),
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    Spacer(),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  DetailScreen()),
+                                        );
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        primary: Colors.purple,
+                                      ),
+                                      child: Text(
+                                        'Chi tiết',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    );
+                  },
                 );
               },
             ),
@@ -167,7 +200,7 @@ class ListTourArea extends StatelessWidget {
                       Icon(Icons.home),
                       SizedBox(width: 8),
                       Text(
-                        'Home',
+                        'Trang Chủ',
                         style: TextStyle(
                           fontSize: 16,
                         ),
