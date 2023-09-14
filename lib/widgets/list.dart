@@ -10,6 +10,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class EcoTourismSpot {
+  final int id;
   final String thumbnail;
   final String name;
   final int star;
@@ -17,6 +18,7 @@ class EcoTourismSpot {
   final double price;
 
   EcoTourismSpot({
+    required this.id,
     required this.thumbnail,
     required this.name,
     required this.star,
@@ -26,6 +28,7 @@ class EcoTourismSpot {
 
   factory EcoTourismSpot.fromJson(Map<String, dynamic> json) {
     return EcoTourismSpot(
+      id: json['id'],
       thumbnail: json['thumbnail'],
       name: json['name'],
       star: json['star'],
@@ -87,7 +90,7 @@ class ListTourArea extends StatelessWidget {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
-                  return Center(child: Text('Lỗi: ${snapshot.error}'));
+                  return Center(child: Text('Error: ${snapshot.error}'));
                 }
 
                 List<EcoTourismSpot> ecoTourismSpots = snapshot.data!;
@@ -95,7 +98,7 @@ class ListTourArea extends StatelessWidget {
                 return ListView.builder(
                   itemCount: ecoTourismSpots.length,
                   itemBuilder: (BuildContext context, int index) {
-                    EcoTourismSpot spot = ecoTourismSpots[index];
+                    EcoTourismSpot item = ecoTourismSpots[index];
                     return Container(
                       padding: EdgeInsets.symmetric(vertical: 8),
                       margin: EdgeInsets.symmetric(horizontal: 24),
@@ -109,7 +112,7 @@ class ListTourArea extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Image.network(
-                            spot.thumbnail,
+                            item.thumbnail,
                             fit: BoxFit.cover,
                             width: double.infinity,
                             height: 200,
@@ -121,7 +124,7 @@ class ListTourArea extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  spot.name,
+                                  item.name,
                                   style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
@@ -129,14 +132,14 @@ class ListTourArea extends StatelessWidget {
                                 ),
                                 SizedBox(height: 4),
                                 Text(
-                                  'Số sao: ${spot.star}',
+                                  'Số sao: ${item.star}',
                                   style: TextStyle(
                                     fontSize: 16,
                                   ),
                                 ),
                                 SizedBox(height: 4),
                                 Text(
-                                  'Địa chỉ: ${spot.address}',
+                                  'Địa chỉ: ${item.address}',
                                   style: TextStyle(
                                     fontSize: 16,
                                   ),
@@ -147,9 +150,10 @@ class ListTourArea extends StatelessWidget {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      'Giá: ${spot.price.toStringAsFixed(2)}',
+                                      'Giá:  \$${item.price.toStringAsFixed(2)}',
                                       style: TextStyle(
-                                        fontSize: 16,
+                                        fontSize: 18,
+                                        color: Colors.red,
                                       ),
                                     ),
                                     Spacer(),
@@ -159,7 +163,7 @@ class ListTourArea extends StatelessWidget {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  DetailScreen()),
+                                                  DetailScreen(id: item.id)),
                                         );
                                       },
                                       style: ElevatedButton.styleFrom(
