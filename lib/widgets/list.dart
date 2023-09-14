@@ -4,30 +4,31 @@ import './profile.dart';
 import './favorite.dart';
 import './search.dart';
 import './detail.dart';
+import '/utils/constants.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class EcoTourismSpot {
-  final String image;
+  final String thumbnail;
   final String name;
-  final int stars;
+  final int star;
   final String address;
   final double price;
 
   EcoTourismSpot({
-    required this.image,
+    required this.thumbnail,
     required this.name,
-    required this.stars,
+    required this.star,
     required this.address,
     required this.price,
   });
 
   factory EcoTourismSpot.fromJson(Map<String, dynamic> json) {
     return EcoTourismSpot(
-      image: json['image'],
+      thumbnail: json['thumbnail'],
       name: json['name'],
-      stars: json['stars'],
+      star: json['star'],
       address: json['address'],
       price: json['price'],
     );
@@ -36,7 +37,8 @@ class EcoTourismSpot {
 
 class ListTourArea extends StatelessWidget {
   Future<List<EcoTourismSpot>> fetchData() async {
-    final response = await http.get(Uri.http("127.0.0.1:8888", "/tour"));
+    String url = LOCAL_HOST + ":" + PORT.toString();
+    final response = await http.get(Uri.http(url, "/tour"));
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
@@ -107,7 +109,7 @@ class ListTourArea extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Image.network(
-                            spot.image,
+                            spot.thumbnail,
                             fit: BoxFit.cover,
                             width: double.infinity,
                             height: 200,
@@ -127,7 +129,7 @@ class ListTourArea extends StatelessWidget {
                                 ),
                                 SizedBox(height: 4),
                                 Text(
-                                  'Số sao: ${spot.stars}',
+                                  'Số sao: ${spot.star}',
                                   style: TextStyle(
                                     fontSize: 16,
                                   ),
